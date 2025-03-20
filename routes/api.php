@@ -16,6 +16,14 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/dashboard', function () {
         return response()->json(['message' => 'Welcome to the dashboard']);
     });
+
+    Route::group(['prefix' => 'transactions'], function () {
+        Route::get('/', 'TransactionController@index');
+        Route::post('/', 'TransactionController@store');
+        Route::get('/{id}', 'TransactionController@show');
+        Route::put('/{id}', 'TransactionController@update');
+        Route::delete('/{id}', 'TransactionController@destroy');
+    });
 });
 
 /*Route::group(['middleware' => 'auth:sanctum'], function () {
