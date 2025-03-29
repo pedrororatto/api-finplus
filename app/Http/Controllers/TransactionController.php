@@ -25,6 +25,7 @@ class TransactionController extends Controller
 
         $transactions = Transaction::filter($validated)
             ->where('user_id', auth()->user()->id)
+            ->with('category') // Carregar a relação 'category'
             ->orderBy('date', 'desc')
             ->paginate(10);
 
