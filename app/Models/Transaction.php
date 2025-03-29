@@ -26,13 +26,10 @@ class Transaction extends Model
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Get the category that owns the transaction.
-     */
-    /*public function category(): BelongsTo
+    public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
-    }*/
+    }
 
     public function scopeFilter($query, array $filters)
     {

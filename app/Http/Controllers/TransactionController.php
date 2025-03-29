@@ -25,7 +25,7 @@ class TransactionController extends Controller
 
         $transactions = Transaction::filter($validated)
             ->where('user_id', auth()->user()->id)
-            ->latest()
+            ->orderBy('date', 'desc')
             ->paginate(10);
 
         return TransactionResource::collection($transactions);
@@ -39,7 +39,7 @@ class TransactionController extends Controller
 
                 // Create the transaction
                 $transaction = Transaction::create([
-                    'user_id' => $request->user()->id,
+                    'user_id' => auth()->user()->id,
                     'type' => $transactionData['type'],
                     'category_id' => $transactionData['category_id'],
                     'description' => $transactionData['description'],

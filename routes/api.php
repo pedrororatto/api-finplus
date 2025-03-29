@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\CategoryController;
 
 
 Route::get('/', function () {
@@ -24,6 +25,14 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
             Route::get('/{transaction}', [TransactionController::class, 'show']);
             Route::put('/{transaction}', [TransactionController::class, 'update']);
             Route::delete('/{transaction}', [TransactionController::class, 'destroy']);
+        });
+
+        Route::group(['prefix' => 'categories'], function () {
+            Route::get('/', [CategoryController::class, 'index']);
+            Route::post('/', [CategoryController::class, 'store']);
+            Route::get('/{category}', [CategoryController::class, 'show']);
+            Route::put('/{category}', [CategoryController::class, 'update']);
+            Route::delete('/{category}', [CategoryController::class, 'destroy']);
         });
     });
 });

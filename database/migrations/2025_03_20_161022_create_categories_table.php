@@ -18,6 +18,7 @@ return new class extends Migration
             $table->enum('type', ['income', 'expense', 'transfer']);
             $table->string('color', 7)->nullable();
             $table->boolean('is_system')->default(0); #ver se foi o sistema que criou ou o usuário
+            $table->softDeletes();
             $table->timestamps();
 
             $table->index('user_id');
