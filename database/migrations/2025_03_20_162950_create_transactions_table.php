@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('description', 255)->nullable();
             $table->decimal('amount', 13, 2);
             $table->dateTime('date');
+            $table->softDeletes();
             $table->timestamps();
 
             $table->index('user_id');

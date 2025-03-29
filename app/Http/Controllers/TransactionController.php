@@ -2,27 +2,36 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\TransactionFormRequest;
+use App\Http\Requests\StoreTransactionFormRequest;
+use App\Http\Requests\UpdateTransactionFormRequest;
 use App\Http\Resources\TransactionResource;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 
 class TransactionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'search' => 'sometimes|string|max:255',
+            'category' => 'sometimes|integer|exists:categories,id',
+            'type' => 'sometimes|string|in:income,expense,transfer',
+            'start_date' => 'sometimes|date',
+            'end_date' => 'sometimes|date',
+        ]);
+
+        $transactions = Transaction::filter($validated)
+            ->where('user_id', auth()->user()->id)
+            ->latest()
+            ->paginate(10);
+
+        return TransactionResource::collection($transactions);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(TransactionFormRequest $request)
+    public function store(StoreTransactionFormRequest $request)
     {
         return DB::transaction(function () use ($request) {
             try {
@@ -55,20 +64,45 @@ class TransactionController extends Controller
         });
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Transaction $transaction)
     {
-        //
+        Gate::authorize('view', $transaction);
+
+        return TransactionResource::make($transaction);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Transaction $transaction)
+    public function update(UpdateTransactionFormRequest $request, Transaction $transaction)
     {
-        //
+        Gate::authorize('update', $transaction);
+
+        return DB::transaction(function () use ($request, $transaction) {
+            try {
+                $transactionData = $request->validated();
+                logger(['before' => $transaction->toArray(), 'after' => $transactionData]);
+                // Update the transaction
+                $transaction->update([
+                    'type' => $transactionData['type'],
+                    'category_id' => $transactionData['category_id'],
+                    'description' => $transactionData['description'],
+                    'amount' => $transactionData['amount'],
+                    'date' => $transactionData['date'] ?? now(),
+                ]);
+                logger(['new' => $transaction->toArray()]);
+                if (!$transaction) {
+                    return response()->json(['message' => 'Transaction update failed'], 500);
+                }
+
+                return TransactionResource::make($transaction);
+            } catch (\Exception $e) {
+                Log::error('Transaction update failed: ' . $e->getMessage());
+
+                DB::rollBack();
+                return response()->json([
+                    'message' => 'Failed to update transaction',
+                    'error' => $e->getMessage()
+                ], 500);
+            }
+        });
     }
 
     /**
@@ -76,6 +110,24 @@ class TransactionController extends Controller
      */
     public function destroy(Transaction $transaction)
     {
-        //
+        Gate::authorize('delete', $transaction);
+
+        return DB::transaction(function () use ($transaction) {
+            try {
+                $transaction->delete();
+
+                return response()->json([
+                    'message' => 'Transaction deleted successfully'
+                ], 200);
+            } catch (\Exception $e) {
+                Log::error('Transaction deletion failed: ' . $e->getMessage());
+
+                DB::rollBack();
+                return response()->json([
+                    'message' => 'Failed to delete transaction',
+                    'error' => $e->getMessage()
+                ], 500);
+            }
+        });
     }
 }

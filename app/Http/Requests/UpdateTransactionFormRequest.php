@@ -6,7 +6,7 @@ use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class TransactionFormRequest extends FormRequest
+class UpdateTransactionFormRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,7 +27,8 @@ class TransactionFormRequest extends FormRequest
             'amount' => 'required|numeric|min:0.01',
             'type' => 'required|string|in:income,expense,transfer',
             'category_id' => ['required',Rule::exists('categories','id')->where(function (Builder $query) {
-                $query->where('user_id', $this->input('user_id'));
+                $query->where('is_system', true)
+                    ->orWhere('user_id', auth()->id());
             })],
             'date' => 'string',
             'description' => 'nullable|string|max:255',
@@ -40,8 +41,6 @@ class TransactionFormRequest extends FormRequest
             'amount.required' => 'O campo valor é obrigatório.',
             'amount.numeric' => 'O campo valor deve ser um número.',
             'amount.min' => 'O campo valor deve ser maior que zero.',
-            'user_id.required' => 'O campo usuário é obrigatório.',
-            'user_id.exists' => 'O usuário informado não existe.',
             'type.required' => 'O campo tipo é obrigatório.',
             'type.string' => 'O campo tipo deve ser uma string.',
             'type.in' => 'O campo tipo deve ser um dos seguintes valores: income, expense, transfer.',

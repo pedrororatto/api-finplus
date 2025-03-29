@@ -21,9 +21,7 @@ class TransactionResource extends JsonResource
             'amount' => number_format($this->amount, 2, '.', ''),
             'type' => $this->type,
             'description' => $this->description,
-            'date' => $this->date->format('Y-m-d H:i:s'),
-            'created_at' => $this->created_at->toIso8601String(),
-            'updated_at' => $this->updated_at->toIso8601String(),
+            'date' => $this->date,
         ];
     }
 }
