@@ -139,7 +139,7 @@ class TransactionObserver
      * @param  \DateTime|string  $date
      * @return array [period_start, period_end]
      */
-    protected function getPeriodRange(string $frequency, $date): array
+    public function getPeriodRange(string $frequency, $date): array
     {
         $carbon = $date instanceof Carbon ? $date : Carbon::parse($date);
 
