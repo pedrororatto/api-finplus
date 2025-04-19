@@ -1,66 +1,83 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 📊 Sistema Financeiro Pessoal (API em Laravel)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Este é um sistema financeiro pessoal desenvolvido com Laravel 12 que permite controlar receitas, despesas, metas financeiras com recorrência, notificações automáticas e visualização de dados em um dashboard informativo.
 
-## About Laravel
+## 🚀 Funcionalidades
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### 🔁 Transações
+- Registro de **despesas** e **receitas**
+- Associação com categorias
+- Suporte a filtros por período, tipo, categoria, etc.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 🎯 Metas Financeiras
+- Criação de metas por **categoria**
+- Frequência: `semanal` ou `mensal`
+- Cálculo automático de progresso
+- Geração automática de **metas futuras** ao término da recorrência (via comando programado)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 🛎️ Notificações
+- Envio automático de notificações via **banco de dados** e **broadcast**
+- Gatilho configurado por Observer quando a meta atinge determinado percentual
+- Endpoint para listar notificações pendentes do usuário
 
-## Learning Laravel
+### 📅 Agendamento de Metas Recorrentes
+- Comando Artisan `goals:generate-next` roda diariamente via `scheduler`
+- Cria a próxima instância da meta ao fim do período atual, de forma automática
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 📈 Dashboard
+- Total de despesas e receitas no período
+- Evolução do saldo (por dia/mês)
+- Gráfico de despesas por categoria
+- Lista de transações recentes
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 📋 Relatórios (em breve)
+- Resumo mensal: receitas, despesas, saldo final
+- Progresso de metas
+- Gasto por categoria
+- Comparativo com meses anteriores
+- Exportação de CSV
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 🛠️ Tecnologias Utilizadas
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- Laravel 12
+- MySQL
+- Laravel Notifications (via database + broadcast)
+- Laravel Scheduler (para execução diária de jobs)
+- Laravel Queues (para envio assíncrono de notificações)
+- Kool.dev
+- API RESTful
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+## 📦 Instalação com Kool.dev
 
-## Contributing
+Este projeto utiliza o [Kool](https://kool.dev) para facilitar o setup de ambientes Docker para desenvolvimento local.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Pré-requisitos
 
-## Code of Conduct
+- [Docker](https://www.docker.com/)
+- [Kool CLI](https://kool.dev/docs/getting-started/installation)
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Passos para rodar o projeto localmente:
 
-## Security Vulnerabilities
+```bash
+git clone git@github.com:pedrororatto/api-finplus.git
+cd api-finplus
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# Environment variables
+Caso necessário troque o KOOL_DATABASE_PORT para uma porta e sua preferência em .env.example
 
-## License
+# Instala dependências
+kool setup
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# Restarta os containers
+kool restart
+
+# Executa as migrations
+kool run artisan migrate
+
+# Executa os seeders
+kool run artisan db:seed
+
