@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TransactionController;
@@ -19,11 +20,12 @@ Route::post('/logout', 'AuthController@logout');
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/test', function () {
-        return response()->json(['message' => 'Teste']);
+        return response()->json(['message' => 'Usuário logado']);
     });
     Route::group(['prefix' => 'user'], function () {
         // Transactions
         Route::apiResource('transactions', TransactionController::class);
+        Route::get('transactions/total/by-expense', [TransactionController::class, 'transactionForEachExpenseCategory']);
 
         // Categories
         Route::apiResource('categories', CategoryController::class);
@@ -38,6 +40,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('/notifications', [NotificationController::class, 'index']);
         Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
         Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
+
+        //Dashboard
+        Route::get('/dashboard', [DashboardController::class, 'dashboard']);
 
     });
 });

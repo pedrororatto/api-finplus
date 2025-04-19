@@ -131,4 +131,38 @@ class TransactionController extends Controller
             }
         });
     }
+
+    public function transactionForEachExpenseCategory(Request $request)
+    {
+        $validated = $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+        ]);
+
+        $transactions = Transaction::where('user_id', auth()->user()->id)
+            ->where('date', '>=', $validated['start_date'])
+            ->where('date', '<=', $validated['end_date'])
+            ->where('type', 'expense') // Only consider expenses
+            ->selectRaw('category_id, SUM(amount) as total')
+            ->groupBy('category_id')
+            ->with('category:id,name') // Eager load the category relationship
+            ->get();
+
+        //make the percentages for each category
+        $totalAmount = $transactions->sum('total');
+        foreach ($transactions as $transaction) {
+            $transaction->percentage = ($transaction->total / $totalAmount) * 100;
+            $transaction->percentage = round($transaction->percentage, 2);
+        }
+        $transactions = $transactions->sortByDesc('total');
+
+        $transactions = $transactions->map(function ($transaction) {
+            return [
+                'category' => $transaction->category->name,
+                'total' => $transaction->total,
+                'percentage' => $transaction->percentage,
+            ];
+        });
+        return response()->json(['data' => $transactions, 'total' => $totalAmount]);
+    }
 }
