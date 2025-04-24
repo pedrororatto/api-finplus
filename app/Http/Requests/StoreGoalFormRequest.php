@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreGoalFormRequest extends FormRequest
 {
@@ -22,7 +23,13 @@ class StoreGoalFormRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'category_id'   => 'required|exists:categories,id|unique:goals,category_id',
+            'category_id' => [
+                'required',
+                Rule::exists('categories', 'id')->whereNull('deleted_at'),
+                Rule::unique('goals', 'category_id')->where(function ($query) {
+                    $query->whereNull('deleted_at')->where('user_id', auth()->id());
+                }),
+            ],
             'target_amount' => 'required|numeric|min:0',
             'frequency'     => 'required|in:weekly,monthly',
             'start_date'    => 'required|date',

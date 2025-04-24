@@ -69,6 +69,8 @@ class TransactionController extends Controller
     {
         Gate::authorize('view', $transaction);
 
+        $transaction->load('category');
+
         return TransactionResource::make($transaction);
     }
 

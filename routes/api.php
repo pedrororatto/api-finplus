@@ -11,7 +11,14 @@ use App\Http\Controllers\NotificationController;
 
 
 Route::get('/', function () {
-    return response()->json(['message' => 'Finplus API - v2.0']);
+    return response()->json([
+        'version' => config('app.version'),
+        'name' => config('app.name'),
+        'env' => config('app.env'),
+        'debug' => config('app.debug'),
+        'url' => config('app.url'),
+        'timezone' => config('app.timezone'),
+    ]);
 });
 
 Route::post('/login', [AuthController::class, 'login']);
