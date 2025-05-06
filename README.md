@@ -1,83 +1,88 @@
-# 📊 Sistema Financeiro Pessoal (API em Laravel)
+#   📊 Personal Finance System (Laravel API)
 
-Este é um sistema financeiro pessoal desenvolvido com Laravel 12 que permite controlar receitas, despesas, metas financeiras com recorrência, notificações automáticas e visualização de dados em um dashboard informativo.
+This is a personal finance system developed with Laravel 12 that allows you to control income, expenses, recurring financial goals, automatic notifications, and data visualization in an informative dashboard.
 
-## 🚀 Funcionalidades
+##   🚀 Features
 
-### 🔁 Transações
-- Registro de **despesas** e **receitas**
-- Associação com categorias
-- Suporte a filtros por período, tipo, categoria, etc.
+###   🔁 Transactions
 
-### 🎯 Metas Financeiras
-- Criação de metas por **categoria**
-- Frequência: `semanal` ou `mensal`
-- Cálculo automático de progresso
-- Geração automática de **metas futuras** ao término da recorrência (via comando programado)
+* Registration of **expenses** and **income**
+* Association with categories
+* Support for filters by period, type, category, etc.
 
-### 🛎️ Notificações
-- Envio automático de notificações via **banco de dados** e **broadcast**
-- Gatilho configurado por Observer quando a meta atinge determinado percentual
-- Endpoint para listar notificações pendentes do usuário
+###   🎯 Financial Goals
 
-### 📅 Agendamento de Metas Recorrentes
-- Comando Artisan `goals:generate-next` roda diariamente via `scheduler`
-- Cria a próxima instância da meta ao fim do período atual, de forma automática
+* Creation of goals by **category**
+* Frequency: `weekly` or `monthly`
+* Automatic calculation of progress
+* Automatic generation of **future goals** at the end of the recurrence (via scheduled command)
 
-### 📈 Dashboard
-- Total de despesas e receitas no período
-- Evolução do saldo (por dia/mês)
-- Gráfico de despesas por categoria
-- Lista de transações recentes
+###   🛎️ Notifications
 
-### 📋 Relatórios (em breve)
-- Resumo mensal: receitas, despesas, saldo final
-- Progresso de metas
-- Gasto por categoria
-- Comparativo com meses anteriores
-- Exportação de CSV
+* Automatic sending of notifications via **database** and **broadcast**
+* Trigger configured by Observer when the goal reaches a certain percentage
+* Endpoint to list pending user notifications
 
----
+###   📅 Recurring Goals Scheduling
 
-## 🛠️ Tecnologias Utilizadas
+* Artisan command `goals:generate-next` runs daily via `scheduler`
+* Automatically creates the next instance of the goal at the end of the current period
 
-- Laravel 12
-- MySQL
-- Laravel Notifications (via database + broadcast)
-- Laravel Scheduler (para execução diária de jobs)
-- Laravel Queues (para envio assíncrono de notificações)
-- Kool.dev
-- API RESTful
+###   📈 Dashboard
+
+* Total expenses and income in the period
+* Balance evolution (by day/month)
+* Graph of expenses by category
+* List of recent transactions
+
+###   📋 Reports (coming soon)
+
+* Monthly summary: income, expenses, final balance
+* Goals progress
+* Spending by category
+* Comparison with previous months
+* CSV export
 
 ---
 
-## 📦 Instalação com Kool.dev
+##   🛠️ Technologies Used
 
-Este projeto utiliza o [Kool](https://kool.dev) para facilitar o setup de ambientes Docker para desenvolvimento local.
+* Laravel 12
+* MySQL
+* Laravel Notifications (via database + broadcast)
+* Laravel Scheduler (for daily execution of jobs)
+* Laravel Queues (for asynchronous sending of notifications)
+* Kool.dev
+* RESTful API
 
-### Pré-requisitos
+---
 
-- [Docker](https://www.docker.com/)
-- [Kool CLI](https://kool.dev/docs/getting-started/installation)
+##   📦 Installation with Kool.dev
 
-### Passos para rodar o projeto localmente:
+This project uses [Kool](https://kool.dev) to facilitate the setup of Docker environments for local development.
+
+###   Prerequisites
+
+* [Docker](https://www.docker.com/)
+* [Kool CLI](https://kool.dev/docs/getting-started/installation)
+
+###   Steps to run the project locally:
 
 ```bash
 git clone git@github.com:pedrororatto/api-finplus.git
 cd api-finplus
 
-# Environment variables
-Caso necessário troque o KOOL_DATABASE_PORT para uma porta e sua preferência em .env.example
+#   Environment variables
+#   If necessary, change the KOOL_DATABASE_PORT to your preferred port in .env.example
 
-# Instala dependências
+#   Install dependencies
 kool setup
 
-# Restarta os containers
+#   Restart the containers
 kool restart
 
-# Executa as migrations
+#   Execute the migrations
 kool run artisan migrate
 
-# Executa os seeders
+#   Execute the seeders
 kool run artisan db:seed
-
